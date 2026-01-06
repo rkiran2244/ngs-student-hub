@@ -1,0 +1,71 @@
+# ======================
+# Logs
+# ======================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ======================
+# Node / React
+# ======================
+node_modules/
+dist/
+dist-ssr
+build/
+*.local
+
+# ======================
+# Environment files
+# ======================
+.env
+frontend/.env
+backend/.env
+
+# ======================
+# Flask / Python
+# ======================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv/
+.venv/
+.env/
+instance/
+.pytest_cache/
+# Ignore packaged artifacts
+backend.zip
+
+# ======================
+# Flask uploads (CRITICAL)
+# ======================
+backend/uploads/
+
+# Local development DBs (do not commit)
+backend/dev_fallback.db
+backend/dev_alembic.db
+*.db
+
+# Python compiled files (do not commit)
+__pycache__/
+*.pyc
+*.pyo
+
+
+# ======================
+# Editor / OS files
+# ======================
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

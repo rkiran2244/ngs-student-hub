@@ -1,0 +1,58 @@
+version: '3.8'
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: studenthub_db
+      MYSQL_USER: username
+      MYSQL_PASSWORD: password
+    volumes:
+      - mysql_dev_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-ppassword"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    env_file: 
+      - backend/.env.dev
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-mysql+pymysql://username:password@mysql:3306/studenthub_db?charset=utf8mb4}
+      AUTO_CREATE_DB: '0'
+      PORT: 5001
+    volumes:
+      - ./backend:/app/backend
+      - backend_uploads_dev:/app/backend/uploads
+    ports:
+      - "5001:5001"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    command: ["sh", "-c", "sh backend/docker/entrypoint.sh"]
+
+  frontend_dev:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      VITE_API_URL: ${VITE_API_URL:-http://localhost:5001}
+    ports:
+      - "5173:5173"
+    command: ["sh", "-c", "npm ci --silent && npm run dev -- --host 0.0.0.0"]
+    depends_on:
+      - backend
+
+volumes:
+  backend_uploads_dev:
+    driver: local
+  mysql_dev_data:
+    driver: local
